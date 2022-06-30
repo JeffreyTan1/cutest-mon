@@ -19,6 +19,7 @@ const Results: NextPage<{ pokemons: PokemonListingProps[] }> = (props) => {
       <h2 className="text-3xl">Results</h2>
       <div className="p-8" />
       <h3 className="text-xs">Results update every 60 seconds</h3>
+      <h3 className="text-xs">Sorted by vote count</h3>
       <div className="p-2" />
       {props.pokemons.map((p) => (
         <PokemonListing pokemon={p} key={p.id} />
