@@ -80,7 +80,7 @@ export const getStaticProps: GetStaticProps = async () => {
   });
   return {
     props: { pokemons: pokemonOrdered },
-    revalidate: 600,
+    revalidate: 10,
   };
 };
 
