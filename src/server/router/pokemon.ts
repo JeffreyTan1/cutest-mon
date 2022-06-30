@@ -1,6 +1,5 @@
 import { createRouter } from "./context";
 import { z } from "zod";
-import { PokemonClient } from "pokenode-ts";
 import { prisma } from "@/server/utils/prisma";
 
 const MAX_DEX_ID = 898;
@@ -23,22 +22,23 @@ export const pokemonRouter = createRouter()
   .query("getRandomPokemon",{
     async resolve() {
       const {firstId, secondId} = getOptionsForVote();
-      const api = new PokemonClient();
-      const [firstPokemonRes, secondPokemonRes] = await Promise.all([
-        api.getPokemonById(firstId),
-        api.getPokemonById(secondId)
-      ]);
+
+      const db_result = await prisma.pokemon.findMany({where: {id: {in: [firstId, secondId]}}});
+      if (!db_result) throw new Error(`No pokemon(s) found with id ${firstId} or ${secondId}`);
+
+      const [firstPokemonRes, secondPokemonRes] = db_result;
+      if(!firstPokemonRes || !secondPokemonRes) throw new Error(`No pokemon(s) found with id ${firstId} or ${secondId}`);
 
       const firstPokemon = {
         name: firstPokemonRes.name,
         id: firstPokemonRes.id,
-        sprite: firstPokemonRes.sprites.front_default
+        spriteUrl: firstPokemonRes.spriteUrl
       }
 
       const secondPokemon = {
         name: secondPokemonRes.name,
         id: secondPokemonRes.id,
-        sprite: secondPokemonRes.sprites.front_default
+        spriteUrl: secondPokemonRes.spriteUrl
       }
 
       return {

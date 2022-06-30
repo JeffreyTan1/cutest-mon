@@ -1,11 +1,12 @@
 import type { NextPage } from "next";
 import Head from "next/head";
 import { trpc } from "@/utils/trpc";
-import { inferQueryResponse } from "./api/trpc/[trpc]";
-import { useEffect, useState } from "react";
 import Image from "next/image";
 
 const Home: NextPage = () => {
+  // TODO: Fetch 1 or 2 ahead of time to avoid latency
+  // TODO: Add debounce to avoid too many requests
+
   const pokemonQuery = trpc.useQuery(["pokemon.getRandomPokemon"], {
     refetchOnWindowFocus: false,
   });
@@ -77,7 +78,7 @@ const Home: NextPage = () => {
 export default Home;
 
 interface PokemonListingProps {
-  sprite: string | null;
+  spriteUrl: string | null;
   name: string;
   id: number;
 }
@@ -91,7 +92,7 @@ const PokemonListing: React.FC<{
       <h2 className="text-xl">{props.pokemon.name}</h2>
       <div className="p-2" />
       <Image
-        src={props.pokemon.sprite ? props.pokemon.sprite : ""}
+        src={props.pokemon.spriteUrl ? props.pokemon.spriteUrl : ""}
         width={200}
         height={200}
         alt={props.pokemon.name}
