@@ -1,9 +1,16 @@
 import type { NextPage } from "next";
 import Head from "next/head";
-import { trpc } from "../utils/trpc";
+import { trpc } from "@/utils/trpc";
 
 const Home: NextPage = () => {
-  const hello = trpc.useQuery(["example.hello", { text: "from tRPC" }]);
+  const { data, isLoading } = trpc.useQuery([
+    "example.hello",
+    { text: "from tRPC" },
+  ]);
+
+  if (isLoading) {
+    return <p>Loading...</p>;
+  }
 
   return (
     <>
@@ -13,19 +20,20 @@ const Home: NextPage = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <div className="h-screen w-screen flex flex-col justify-center items-center">
-        <div className="text-3xl">Which is cuter?</div>
+        <div className="text-3xl font-medium">Which is cuter?</div>
         <div className="p-4" />
-        <div className="min-w-[40%] m-4 p-8 flex justify-center items-center bg-slate-200 rounded-xl shadow-2x">
+        <div className="min-w-[40%] mx-4 p-8 flex justify-center items-center bg-slate-200 rounded-lg shadow-lg">
           <div className="w-1/3 text-center font-bold text-3xl text-black">
-            VS
+            {data?.greeting}
           </div>
           <div className="w-1/3 text-center font-bold text-3xl text-black">
             VS
           </div>
           <div className="w-1/3 text-center font-bold text-3xl text-black">
-            VS
+            Hello
           </div>
         </div>
+        <div className="p-4" />
       </div>
     </>
   );
