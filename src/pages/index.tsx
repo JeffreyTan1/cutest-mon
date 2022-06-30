@@ -1,14 +1,22 @@
 import type { NextPage } from "next";
 import Head from "next/head";
 import { trpc } from "@/utils/trpc";
+import { inferQueryResponse } from "./api/trpc/[trpc]";
 
 const Home: NextPage = () => {
   const { data, isLoading } = trpc.useQuery(["pokemon.getRandomPokemon"]);
 
-  if (isLoading) {
+  const voteCutest = (id: number) => {
+    console.log("voteCutest", id);
+  };
+  if (isLoading || !data) {
     return (
       <div className="h-screen w-screen flex flex-col justify-center items-center">
-        Loading...
+        {isLoading ? (
+          <div className="text-center">Loading...</div>
+        ) : (
+          <div className="text-center">Error</div>
+        )}
       </div>
     );
   }
@@ -23,20 +31,12 @@ const Home: NextPage = () => {
       <div className="h-screen w-screen flex flex-col justify-center items-center">
         <div className="text-3xl font-medium">Which is cuter?</div>
         <div className="p-4" />
-        <div className="min-w-[30%] mx-4 p-8 flex justify-center items-center bg-slate-300 rounded-lg shadow-lg">
-          <div className="w-1/3 flex flex-col justify-center items-center text-center text-gray-900 font-medium capitalize">
-            <img src={data?.firstPokemon.sprite} width="150" />
-            <div className="p-2" />
-            <h2>{data?.firstPokemon.name}</h2>
-          </div>
-          <div className="w-1/6 text-center font-bold text-3xl text-black">
+        <div className="min-w-[30%] mx-4 py-6 px-8 flex justify-center items-center bg-slate-300 rounded-lg shadow-lg">
+          <PokemonListing pokemon={data.firstPokemon} vote={voteCutest} />
+          <div className="w-1/3 text-center font-bold text-3xl text-black">
             VS
           </div>
-          <div className="w-1/3 flex flex-col justify-center items-center text-center text-gray-900 font-medium capitalize">
-            <img src={data?.secondPokemon.sprite} width="150" />
-            <div className="p-2" />
-            <h2>{data?.secondPokemon.name}</h2>
-          </div>
+          <PokemonListing pokemon={data.secondPokemon} vote={voteCutest} />
         </div>
         <div className="p-4" />
       </div>
@@ -45,3 +45,29 @@ const Home: NextPage = () => {
 };
 
 export default Home;
+
+interface PokemonListingProps {
+  sprite: string | null;
+  name: string;
+  id: number;
+}
+
+const PokemonListing: React.FC<{
+  pokemon: PokemonListingProps;
+  vote: (selected: number) => void;
+}> = (props) => {
+  return (
+    <div className="w-1/3 flex flex-col justify-center items-center text-center text-gray-900 font-medium capitalize">
+      <h2 className="text-xl">{props.pokemon.name}</h2>
+      <div className="p-2" />
+      <img src={props.pokemon.sprite} width="200" />
+      <div className="p-2" />
+      <button
+        className="bg-pink-500 hover:bg-pink-400 text-white text-sm font-bold py-1.5 px-2 rounded w-full"
+        onClick={() => props.vote(props.pokemon.id)}
+      >
+        Cuter
+      </button>
+    </div>
+  );
+};
