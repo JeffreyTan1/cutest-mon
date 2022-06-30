@@ -80,7 +80,7 @@ const PokemonListing: React.FC<{
     <div className="w-1/3 flex flex-col justify-center items-center text-center text-gray-900 font-medium capitalize">
       <h2 className="text-xl">{props.pokemon.name}</h2>
       <div className="p-2" />
-      <img src={props.pokemon.sprite} width="200" />
+      <img src={props.pokemon.sprite ? props.pokemon.sprite : ""} width="200" />
       <div className="p-2" />
       <button
         className="bg-pink-500 hover:bg-pink-400 text-white text-sm font-bold py-1.5 px-2 rounded w-full"
