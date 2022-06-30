@@ -18,7 +18,7 @@ const Results: NextPage<{ pokemons: PokemonListingProps[] }> = (props) => {
       <div className="p-8" />
       <h2 className="text-3xl">Results</h2>
       <div className="p-8" />
-      <h3 className="text-xs">Results update every 10 seconds</h3>
+      <h3 className="text-xs">Results update every 60 seconds</h3>
       <div className="p-2" />
       {props.pokemons.map((p) => (
         <PokemonListing pokemon={p} key={p.id} />
@@ -82,7 +82,7 @@ export const getStaticProps: GetStaticProps = async () => {
   });
   return {
     props: { pokemons: pokemonOrdered },
-    revalidate: 10,
+    revalidate: 60,
   };
 };
 
