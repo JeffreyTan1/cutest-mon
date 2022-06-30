@@ -23,10 +23,23 @@ export const pokemonRouter = createRouter()
     async resolve() {
       const {firstId, secondId} = getOptionsForVote();
       const api = new PokemonClient();
-      const [firstPokemon, secondPokemon] = await Promise.all([
+      const [firstPokemonRes, secondPokemonRes] = await Promise.all([
         api.getPokemonById(firstId),
         api.getPokemonById(secondId)
       ]);
+
+      const firstPokemon = {
+        name: firstPokemonRes.name,
+        id: firstPokemonRes.id,
+        sprite: firstPokemonRes.sprites.front_default
+      }
+
+      const secondPokemon = {
+        name: secondPokemonRes.name,
+        id: secondPokemonRes.id,
+        sprite: secondPokemonRes.sprites.front_default
+      }
+
       return {
         firstPokemon,
         secondPokemon
