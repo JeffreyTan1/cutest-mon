@@ -4,11 +4,31 @@ import { trpc } from "@/utils/trpc";
 import { inferQueryResponse } from "./api/trpc/[trpc]";
 
 const Home: NextPage = () => {
-  const { data, isLoading } = trpc.useQuery(["pokemon.getRandomPokemon"]);
+  const pokemonQuery = trpc.useQuery(["pokemon.getRandomPokemon"]);
+  const { data, isLoading } = pokemonQuery;
 
-  const voteCutest = (id: number) => {
-    console.log("voteCutest", id);
+  const voteMutation = trpc.useMutation(["pokemon.cast-vote"]);
+
+  const voteCutest = (selected_id: number) => {
+    const firstPokemonId = data?.firstPokemon?.id;
+    const secondPokemonId = data?.secondPokemon?.id;
+    if (!firstPokemonId || !secondPokemonId) return;
+
+    if (selected_id === firstPokemonId) {
+      voteMutation.mutate({
+        votedFor: firstPokemonId,
+        votedAgainst: secondPokemonId,
+      });
+    } else {
+      voteMutation.mutate({
+        votedFor: secondPokemonId,
+        votedAgainst: firstPokemonId,
+      });
+    }
+
+    pokemonQuery.refetch();
   };
+
   if (isLoading || !data) {
     return (
       <div className="h-screen w-screen flex flex-col justify-center items-center">
