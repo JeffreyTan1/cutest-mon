@@ -37,7 +37,11 @@ const Home: NextPage = () => {
   if (isFetching || !data) {
     return (
       <div className="h-screen w-screen flex flex-col justify-center items-center text-center text-xl">
-        {isFetching ? <div>Loading...</div> : <div>Error</div>}
+        {isFetching ? (
+          <Image src="/oval.svg" alt="loading" width={50} height={50} />
+        ) : (
+          <div>Error</div>
+        )}
       </div>
     );
   }
