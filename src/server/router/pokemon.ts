@@ -1,6 +1,7 @@
 import { createRouter } from "./context";
 import { z } from "zod";
-import { PokemonClient } from 'pokenode-ts';
+import { PokemonClient } from "pokenode-ts";
+import { prisma } from "@/server/utils/prisma";
 
 const MAX_DEX_ID = 898;
 
@@ -45,5 +46,20 @@ export const pokemonRouter = createRouter()
         secondPokemon
       }
     }
-  }
-  );
+  })
+  .mutation("cast-vote", {
+    input: z.object({
+      votedFor: z.number(),
+      votedAgainst: z.number(),
+    }),
+    async resolve({input}) {
+      const voteInDb = await prisma.vote.create({
+        data: {
+          ...input
+        }
+      })
+      return {success: true, vote: voteInDb};
+    }
+  })
+  
+  ;
