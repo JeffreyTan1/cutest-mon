@@ -1,9 +1,10 @@
 import { GetStaticProps, NextPage } from "next";
 import { prisma } from "@/server/db/client";
 import Image from "next/image";
+import Link from "next/link";
 
 interface PokemonListingProps {
-  count: {
+  _count: {
     VoteFor: number;
     VoteAgainst: number;
   };
@@ -13,29 +14,49 @@ interface PokemonListingProps {
 }
 const Results: NextPage<{ pokemons: PokemonListingProps[] }> = (props) => {
   return (
-    <div className="flex flex-col min-h-full w-full items-center">
+    <div className="flex flex-col min-h-full w-full items-center relative">
       <div className="p-8" />
       <h2 className="text-3xl">Results</h2>
       <div className="p-8" />
       {props.pokemons.map((p) => (
         <PokemonListing pokemon={p} key={p.id} />
       ))}
+
+      <div className="absolute top-5 flex gap-x-10 underline">
+        <Link href="/">Home</Link>
+      </div>
     </div>
   );
 };
 
+const getVotePercentage = (voteFor: number, VoteAgainst: number): string => {
+  if (voteFor === 0 && VoteAgainst === 0) {
+    const no_value = 0;
+    return `${no_value.toFixed(2)}%`;
+  }
+  const total = voteFor + VoteAgainst;
+  const percentage = (voteFor / total) * 100;
+  return `${percentage.toFixed(2)}%`;
+};
+
 const PokemonListing: React.FC<{
   pokemon: PokemonListingProps;
-}> = (props) => {
+}> = ({ pokemon }) => {
   return (
-    <div className="capitalize border-b max-w-2xl w-full mx-4 flex items-center border p-2">
+    <div className="capitalize border-b max-w-2xl w-full mx-4 flex items-center justify-center border px-4 py-2 flex-wrap gap-x-10">
       <Image
-        src={props.pokemon.spriteUrl ? props.pokemon.spriteUrl : ""}
-        width={50}
-        height={50}
-        alt={props.pokemon.name}
+        src={pokemon.spriteUrl ? pokemon.spriteUrl : ""}
+        width={100}
+        height={100}
+        alt={pokemon.name}
       />
-      <h2>{props.pokemon.name}</h2>
+      <h2>{pokemon.name}</h2>
+
+      <p className="text-sm">Votes For: {pokemon._count.VoteFor}</p>
+      <p className="text-sm">Votes Against: {pokemon._count.VoteAgainst}</p>
+      <p className="text-sm">
+        {getVotePercentage(pokemon._count.VoteFor, pokemon._count.VoteAgainst)}
+      </p>
     </div>
   );
 };

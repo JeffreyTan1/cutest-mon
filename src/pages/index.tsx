@@ -2,6 +2,7 @@ import type { NextPage } from "next";
 import Head from "next/head";
 import { trpc } from "@/utils/trpc";
 import Image from "next/image";
+import Link from "next/link";
 
 const Home: NextPage = () => {
   // TODO: Fetch 1 or 2 ahead of time to avoid latency
@@ -60,15 +61,15 @@ const Home: NextPage = () => {
         </div>
         <div className="p-4" />
 
-        <div className="absolute bottom-5 flex gap-x-10">
+        <div className="absolute bottom-5 flex gap-x-10 underline">
           <a
             href="https://github.com/JeffreyTan1/cutest-mon"
             target="_blank"
             rel="noreferrer"
-            className="underline"
           >
             Github
           </a>
+          <Link href="/results">Results</Link>
         </div>
       </div>
     </>
