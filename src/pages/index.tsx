@@ -59,11 +59,12 @@ const Home: NextPage = () => {
         </div>
         <div className="p-4" />
 
-        <div className="absolute bottom-5">
+        <div className="absolute bottom-5 flex gap-x-10">
           <a
             href="https://github.com/JeffreyTan1/cutest-mon"
             target="_blank"
             rel="noreferrer"
+            className="underline"
           >
             Github
           </a>
